@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 #data = pd.read_csv('invest.csv', index_col='Date')
 data = pd.read_csv('invest.csv')
 data['Total_balance'] = data[['LQ', 'HF', 'JHL', 'GZ']].sum(axis=1)
-print(data['Date'])
-#print(data)
+#print(data['Date'])
+print(data)
 data.to_excel('invest_output.xlsx')
 
 # 设置中文字体
