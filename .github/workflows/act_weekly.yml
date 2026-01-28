@@ -33,9 +33,9 @@ jobs:
         pip install matplotlib pandas openpyxl
     - name: Setup chinese fonts
       run:
-        apt-get install fonts-wqy-zenhei
+        sudo apt-get install fonts-wqy-zenhei
         
-        fc-cache -f -v
+        sudo fc-cache -f -v
         
         ls -la /usr/share/fonts/chinese/
        
