@@ -40,7 +40,7 @@ jobs:
       run: |
          git config --local user.email "sungsun@163.com"
          git config --local user.name "sungang"
-         git add inv_report.png
+         git add invest_report.png
          git add invest_output.xlsx
          git commit -m "更新数据"
     - name: push
