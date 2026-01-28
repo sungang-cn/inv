@@ -34,7 +34,9 @@ jobs:
     - name: Setup chinese fonts
       run:
         apt-get install fonts-wqy-zenhei
+        
         fc-cache -f -v
+        
         ls -la /usr/share/fonts/chinese/
        
     - name: Run
