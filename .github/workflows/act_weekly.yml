@@ -36,8 +36,6 @@ jobs:
         sudo apt-get install fonts-wqy-zenhei
         
         sudo fc-cache -f -v
-        
-        ls -la /usr/share/fonts/chinese/
        
     - name: Run
       run: |
