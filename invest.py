@@ -10,7 +10,8 @@ data['Total_balance'] = data[['LQ', 'HF', 'JHL', 'GZ']].sum(axis=1)
 data.to_excel('invest_output.xlsx')
 
 # 设置中文字体
-plt.rcParams['font.family'] = 'SimHei'
+#plt.rcParams['font.family'] = 'SimHei'
+plt.rcParams['font.family'] = "WenQuanYi Zen Hei"
 plt.figure(figsize=(10, 6))
 plt.plot(data['index'], data['Total_balance'], marker='o', label='Total Balance', color='blue')
 plt.plot(data['index'], data['LQ'], marker='o', label='LQ', linestyle='--')
