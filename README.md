@@ -4,3 +4,6 @@
 # 收益曲线
 ![每周收益图](./invest_report.png)
 
+# 测试曲线
+![每周收益图](https://github.com/sungsun-cn/inv/raw/master/invest_report.png)
+
