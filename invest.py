@@ -19,12 +19,20 @@ data.to_excel('invest_output.xlsx')
 plt.rcParams['font.family'] = "WenQuanYi Zen Hei"
 plt.figure(figsize=(10, 6))
 plt.plot(data['index'], data['Total_balance'], marker='o', label='Total Balance', color='blue')
-plt.plot(data['index'], data['LQ'], marker='o', label='LQ', linestyle='--')
-plt.plot(data['index'], data['HF'], marker='o', label='HF', linestyle='--')
-plt.plot(data['index'], data['JHL'], marker='o', label='JHL', linestyle='--')
-plt.plot(data['index'], data['GZ'], marker='o', label='GZ', linestyle='--')
 for i in enumerate(data['Total_balance']):
     plt.text(data['index'][i[0]] + 0.1, data['Total_balance'][i[0]] + 0.1, str(data['Total_balance'][i[0]]), fontsize=9)
+plt.plot(data['index'], data['LQ'], marker='o', label='LQ', linestyle='--')
+for i in enumerate(data['LQ']):
+    plt.text(data['index'][i[0]] + 0.1, data['LQ'][i[0]] + 0.1, str(data['LQ'][i[0]]), fontsize=9)
+plt.plot(data['index'], data['HF'], marker='o', label='HF', linestyle='--')
+for i in enumerate(data['HF']):
+    plt.text(data['index'][i[0]] + 0.1, data['HF'][i[0]] + 0.1, str(data['HF'][i[0]]), fontsize=9)
+plt.plot(data['index'], data['JHL'], marker='o', label='JHL', linestyle='--')
+for i in enumerate(data['Total_balance']):
+    plt.text(data['index'][i[0]] + 0.1, data['JHL'][i[0]] + 0.1, str(data['JHL'][i[0]]), fontsize=9)
+plt.plot(data['index'], data['GZ'], marker='o', label='GZ', linestyle='--')
+for i in enumerate(data['Total_balance']):
+    plt.text(data['index'][i[0]] + 0.1, data['GZ'][i[0]] + 0.1, str(data['GZ'][i[0]]), fontsize=9)
 # 设置非数字轴标签
 plt.xticks(data['index'], data['Date'], rotation=45)
 #plt.title('Investment Portfolio Over Weeks')
