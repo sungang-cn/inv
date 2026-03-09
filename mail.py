@@ -20,26 +20,29 @@ def decode_str(s):
     else:
         subject = str(sub_bytes, sub_charset)
     return subject
-	
+
 def get_email_content():
     # 邮箱配置（替换为你的信息）
     IMAP_SERVER = 'imap.163.com' 
     #EMAIL = input("请输入163邮箱地址: ") 
     #PASSWORD = getpass.getpass("请输入邮箱授权码: ") # 安全输入密码
     EMAIL = 'sungsun@163.com'
+    #omk
     PASSWORD = 'PMSpb3AXYAiN2ju'
     imap_id = ("name", "sungang", "contact", "sungsun@163.com", "version", "1.0.0", "vendor", "imaplib")
     try:
         # 连接IMAP服务器
         with imaplib.IMAP4_SSL(IMAP_SERVER) as mail: 
+            mail.debug = 4
             status, data = mail.login(EMAIL, PASSWORD)
             if status != "OK":
                 raise Exception("无法登录")
-            status, data = mail.capability()
+            status, cap = mail.capability()
             if status != "OK":
                 raise Exception("无法获取capability")
             else:
-                print(data)
+                None
+                #print(cap)
             mail.xatom('ID', '("' + '" "'.join(imap_id) + '")')
             if status != "OK":
                 raise Exception("无法执行xatom ID")
@@ -54,7 +57,11 @@ def get_email_content():
             # 搜索所有未读邮件（可根据需求修改搜索条件）
             status, messages = mail.search(None, 'ALL') 
             #status, messages = mail.search(None,'SUBJECT "2026"') 
-            #status, messages = mail.search(None, 'SUBJECT "幻方量化"'.encode('utf-8'))
+            #search_criteria = 'CHARSET UTF-8 SUBJECT "幻方"'.encode('utf-8')
+            #status, messages = mail.search(None, search_criteria)
+            #status, messages = mail.search('GB2312', '(SUBJECT "基金")'.encode('gb2312'))
+            #status, messages = mail.search('UTF-8', '(SUBJECT "基金")'.encode('utf-8'))
+            #status, messages = mail.search(None, 'SUBJECT "charset=UTF-8"')
             if status != 'OK': 
                 print("没有找到邮件") 
                 return
@@ -63,9 +70,16 @@ def get_email_content():
             print(f"找到 {len(email_ids)} 封新邮件")
             for email_id in email_ids:
                 # 获取邮件内容
-                status, msg_data = mail.fetch(email_id, '(RFC822)') 
+                '''
+                status, msg_data = mail.fetch(email_id, '(RFC822)')
+                '''
+                status, msg_data = mail.fetch(email_id, '(BODY[HEADER.FIELDS (SUBJECT)])')
                 if status != 'OK': 
                     continue
+                subject = msg_data[0][1].decode().splitlines()[0]
+                subject = decode_str(subject)
+                print(subject)
+                #if 'Subject:' in subject and '基金' in subject:
                 # 解析邮件
                 raw_email = msg_data[0][1] 
                 msg = email.message_from_bytes(raw_email)
