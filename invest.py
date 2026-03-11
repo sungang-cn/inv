@@ -35,9 +35,10 @@ plt.plot(data['index'], data['JHL'], marker='o', label='JHL', linestyle='--')
 plt.plot(data['index'], data['GZ'], marker='o', label='GZ', linestyle='--')
 #xxr-LQ
 plt.plot(data['index'], xxr.values(), marker='o', label='xxr-LQ', linestyle='--', color='purple')
+'''
 for i in enumerate(xxr.values()):
     plt.text(data['index'][i[0]] + 0.1, float(i)+float(0.1), str(i), fontsize=9)
-
+'''
 for i in enumerate(data['Total_balance']):
     plt.text(data['index'][i[0]] + 0.1, data['Total_balance'][i[0]] + 0.1, str(data['Total_balance'][i[0]]), fontsize=9)
 '''
