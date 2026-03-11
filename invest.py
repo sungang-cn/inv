@@ -13,10 +13,10 @@ data['Total_balance'] = data[['LQ', 'HF', 'JHL', 'GZ']].sum(axis=1).round(2)
 #print(data)
 data.to_excel('invest_output.xlsx')
 
-'''for xxr'''
+'''for xxr-LQ'''
 xxr = {}
 for i in data['index']:
-    if i < 15: 
+    if i < 16: 
         xxr[i] = np.float64(0.0)
     else:
         print(data['LQ'][i])
@@ -28,13 +28,13 @@ for i in data['index']:
 #plt.rcParams['font.family'] = 'SimHei'
 plt.rcParams['font.family'] = "WenQuanYi Zen Hei"
 plt.figure(figsize=(10, 6))
-plt.plot(data['index'], data['Total_balance'], marker='o', label='Total Balance', color='blue')
+plt.plot(data['index'], data['Total_balance'], marker='o', label='Total', color='red')
 plt.plot(data['index'], data['LQ'], marker='o', label='LQ', linestyle='--')
 plt.plot(data['index'], data['HF'], marker='o', label='HF', linestyle='--')
 plt.plot(data['index'], data['JHL'], marker='o', label='JHL', linestyle='--')
 plt.plot(data['index'], data['GZ'], marker='o', label='GZ', linestyle='--')
-#xxr
-plt.plot(data['index'], xxr.values(), marker='o', label='xxr', linestyle='--', color='yellow')
+#xxr-LQ
+plt.plot(data['index'], xxr.values(), marker='o', label='xxr-LQ', linestyle='--', color='purple')
 
 for i in enumerate(data['Total_balance']):
     plt.text(data['index'][i[0]] + 0.1, data['Total_balance'][i[0]] + 0.1, str(data['Total_balance'][i[0]]), fontsize=9)
