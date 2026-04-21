@@ -52,7 +52,7 @@ for i in enumerate(data['JHL']):
     plt.text(data['index'][i[0]] + 0.1, data['JHL'][i[0]] + 0.1, str(data['JHL'][i[0]]), fontsize=9)
 '''
 # 设置非数字轴标签
-plt.xticks(data['index'], data['Date'], rotation=45)
+plt.xticks(data['index'], data['Date'], rotation=75)
 #plt.title('Investment Portfolio Over Weeks')
 plt.xlabel('周')
 plt.ylabel('收益')
