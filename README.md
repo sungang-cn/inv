@@ -12,5 +12,8 @@ SG份额: 1084206.3
 # claw token
 babee1f3f16822860ec46576038e51ec5867664d1aa20c60
 
-# openrouter key oma
+# openrouter key omA
 sk-or-v1-dc144737761de758f3922fd8ac2260129c74df70f8e5422f48f5eddbce80b04
+
+# opencode/zen omt
+sk-t15JExwWjesEsmGfRINNVmNwKTG0YzEgC5AKwVN6o0B7adZe4HApghhNGQCbDift
