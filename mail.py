@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import imaplib 
-import email 
-import getpass 
+import imaplib
+import email
+import os
 
 def decode_str(s):
     try:
@@ -23,27 +23,20 @@ def decode_str(s):
 
 def get_email_content():
     # 邮箱配置（替换为你的信息）
-    IMAP_SERVER = 'imap.163.com' 
-    #EMAIL = input("请输入163邮箱地址: ") 
-    #PASSWORD = getpass.getpass("请输入邮箱授权码: ") # 安全输入密码
-    EMAIL = 'sungsun@163.com'
-    #omk
-    PASSWORD = 'PMSpb3AXYAiN2ju'
+    IMAP_SERVER = 'imap.163.com'
+    EMAIL = os.environ.get('MAIL_USER', 'sungsun@163.com')
+    PASSWORD = os.environ.get('MAIL_PASS', 'PMSpb3AXYAiN2ju') #omK
     imap_id = ("name", "sungang", "contact", "sungsun@163.com", "version", "1.0.0", "vendor", "imaplib")
     try:
         # 连接IMAP服务器
-        with imaplib.IMAP4_SSL(IMAP_SERVER) as mail: 
-            mail.debug = 4
+        with imaplib.IMAP4_SSL(IMAP_SERVER) as mail:
             status, data = mail.login(EMAIL, PASSWORD)
             if status != "OK":
                 raise Exception("无法登录")
             status, cap = mail.capability()
             if status != "OK":
                 raise Exception("无法获取capability")
-            else:
-                None
-                #print(cap)
-            mail.xatom('ID', '("' + '" "'.join(imap_id) + '")')
+            status, _ = mail.xatom('ID', '("' + '" "'.join(imap_id) + '")')
             if status != "OK":
                 raise Exception("无法执行xatom ID")
             status, maillist = mail.list()
@@ -54,14 +47,7 @@ def get_email_content():
             #status, message = mail.select(b'() "/" "INBOX"') # 选择收件箱
             if status != "OK":
                 raise Exception("无法选择邮箱")
-            # 搜索所有未读邮件（可根据需求修改搜索条件）
-            status, messages = mail.search(None, 'ALL') 
-            #status, messages = mail.search(None,'SUBJECT "2026"') 
-            #search_criteria = 'CHARSET UTF-8 SUBJECT "幻方"'.encode('utf-8')
-            #status, messages = mail.search(None, search_criteria)
-            #status, messages = mail.search('GB2312', '(SUBJECT "基金")'.encode('gb2312'))
-            #status, messages = mail.search('UTF-8', '(SUBJECT "基金")'.encode('utf-8'))
-            #status, messages = mail.search(None, 'SUBJECT "charset=UTF-8"')
+            status, messages = mail.search(None, 'ALL')
             if status != 'OK': 
                 print("没有找到邮件") 
                 return
@@ -69,35 +55,19 @@ def get_email_content():
             email_ids = messages[0].split() 
             print(f"找到 {len(email_ids)} 封新邮件")
             for email_id in email_ids:
-                # 获取邮件内容
-                '''
                 status, msg_data = mail.fetch(email_id, '(RFC822)')
-                '''
-                status, msg_data = mail.fetch(email_id, '(BODY[HEADER.FIELDS (SUBJECT)])')
-                if status != 'OK': 
+                if status != 'OK':
                     continue
-                subject = msg_data[0][1].decode().splitlines()[0]
-                subject = decode_str(subject)
-                print(subject)
-                #if 'Subject:' in subject and '基金' in subject:
-                # 解析邮件
-                raw_email = msg_data[0][1] 
+                raw_email = msg_data[0][1]
                 msg = email.message_from_bytes(raw_email)
-                # 解析邮件头
-                subject = decode_str(msg['Subject']) 
-                from_ = decode_str(msg['From']) 
-                print(f"\n主题: {subject}") 
+                subject = decode_str(msg['Subject'])
+                from_ = decode_str(msg['From'])
+                print(f"\n主题: {subject}")
                 print(f"发件人: {from_}")
-                # 解析邮件正文
-                for part in msg.walk(): 
-                    content_type = part.get_content_type()
-                    print(content_type)
-                    '''
-                    if content_type == 'text/plain': 
-                        body = part.get_payload(decode=True).decode('utf-8', errors='ignore') 
-                        print("\n正文内容:") 
-                        print(body.strip())
-                    '''
+                for part in msg.walk():
+                    if part.get_content_type() == 'text/plain':
+                        body = part.get_payload(decode=True).decode('utf-8', errors='ignore')
+                        print(f"正文:\n{body.strip()}")
             mail.close()
             mail.logout()
 
