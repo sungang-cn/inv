@@ -75,33 +75,76 @@ def fetch_nav_and_plot():
             if status != "OK":
                 raise Exception("无法登录")
             mail.xatom('ID', '("' + '" "'.join(imap_id) + '")')
-            mail.select(mailbox='INBOX', readonly=True)
+            # 获取所有文件夹
+            status, folders = mail.list()
+            all_folders = []
+            if status == 'OK' and folders:
+                for item in folders:
+                    decoded = item.decode(errors='ignore')
+                    parts = decoded.split(' "/" ')
+                    if len(parts) == 2:
+                        name = parts[1].strip('"')
+                        if name:
+                            all_folders.append(name)
+            print(f"找到 {len(all_folders)} 个文件夹: {all_folders}")
 
-            status, messages = mail.search('UTF-8', '(SUBJECT "幻方")'.encode('utf-8'))
-            if status != 'OK' or not messages[0]:
-                print("UTF-8 搜索无结果，尝试全量搜索后本地过滤...")
-                status, messages = mail.search(None, 'ALL')
-
-            email_ids = messages[0].split()
-            print(f"待筛选邮件数: {len(email_ids)}")
-
+            from datetime import timedelta
             all_records = []
-            for eid in email_ids:
-                status, msg_data = mail.fetch(eid, '(RFC822)')
+            searched_total = 0
+
+            for folder in all_folders:
+                try:
+                    status, _ = mail.select(mailbox=folder, readonly=True)
+                except Exception as e:
+                    print(f"  无法打开文件夹: {e}")
+                    continue
                 if status != 'OK':
                     continue
-                msg = email.message_from_bytes(msg_data[0][1])
-                subject = decode_str(msg['Subject'])
-                if '幻方' not in subject:
+                print(f"\n文件夹: {folder}")
+                folder_ids = set()
+                chunk_start = datetime(2000, 1, 1)
+                chunk_end = datetime.now()
+                step = timedelta(days=90)
+                while chunk_start < chunk_end:
+                    chunk_stop = min(chunk_start + step, chunk_end)
+                    since = chunk_start.strftime('%d-%b-%Y')
+                    before = chunk_stop.strftime('%d-%b-%Y')
+                    try:
+                        status, messages = mail.search(None, f'(SINCE {since} BEFORE {before})')
+                        if status == 'OK' and messages[0]:
+                            ids = set(messages[0].split())
+                            folder_ids |= ids
+                    except Exception as e:
+                        print(f"  搜索失败 ({since} ~ {before}): {e}")
+                    chunk_start = chunk_stop
+                if not folder_ids:
                     continue
-                print(f"  解析: {subject}")
-                for part in msg.walk():
-                    if part.get_content_type() in ('text/plain', 'text/html'):
-                        payload = part.get_payload(decode=True)
-                        if payload:
-                            body = payload.decode('utf-8', errors='ignore')
-                            records = parse_nav_from_text(body)
-                            all_records.extend(records)
+                folder_ids = sorted(int(e) for e in folder_ids)
+                searched_total += len(folder_ids)
+                print(f"  邮件数: {len(folder_ids)}")
+
+                for eid in folder_ids:
+                    try:
+                        status, msg_data = mail.fetch(str(eid), '(RFC822)')
+                        if status != 'OK':
+                            continue
+                        msg = email.message_from_bytes(msg_data[0][1])
+                        subject = decode_str(msg['Subject'])
+                        if not subject or '幻方' not in subject:
+                            continue
+                        print(f"  解析: {subject}")
+                        for part in msg.walk():
+                            if part.get_content_type() in ('text/plain', 'text/html'):
+                                payload = part.get_payload(decode=True)
+                                if payload:
+                                    body = payload.decode('utf-8', errors='ignore')
+                                    records = parse_nav_from_text(body)
+                                    all_records.extend(records)
+                    except Exception as e:
+                        print(f"  跳过邮件 {eid}: {e}")
+                        continue
+
+            print(f"\n所有文件夹邮件总数: {searched_total}")
 
             mail.close()
             mail.logout()
