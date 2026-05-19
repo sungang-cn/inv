@@ -12,6 +12,7 @@ data['Total_balance'] = data[['LQ', 'HF', 'JHL', 'GZ']].sum(axis=1).round(2)
 #print(data['Date'])
 #print(data)
 data.to_excel('invest_output.xlsx')
+data.to_csv('invest_output.csv')
 
 '''for xxr-LQ'''
 xxr = {}
