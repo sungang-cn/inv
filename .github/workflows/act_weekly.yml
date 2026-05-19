@@ -47,6 +47,7 @@ jobs:
          git config --local user.name "sungang"
          git add invest_report.png
          git add invest_output.xlsx
+         git add invest_output.csv
          git commit -m "更新数据"
     - name: push
       uses:  ad-m/github-push-action@master
