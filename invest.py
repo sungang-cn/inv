@@ -28,7 +28,7 @@ for i in data['index']:
 # sudo fc-cache -f -v       
 #plt.rcParams['font.family'] = 'SimHei'
 plt.rcParams['font.family'] = "WenQuanYi Zen Hei"
-plt.figure(figsize=(10, 6))
+plt.figure(figsize=(30, 18))
 plt.plot(data['index'], data['Total_balance'], marker='o', label='Total', color='red')
 plt.plot(data['index'], data['LQ'], marker='o', label='LQ', linestyle='--')
 plt.plot(data['index'], data['HF'], marker='o', label='HF', linestyle='--')
@@ -60,5 +60,5 @@ plt.ylabel('收益')
 plt.ylim(0)
 plt.legend()
 plt.grid()
-plt.savefig('invest_report.png')
+plt.savefig('invest_report.png', dpi=300)
 plt.show()
